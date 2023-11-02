@@ -14,6 +14,8 @@ print_memory.c
 
 twi.c
 
+twi_debug.c
+
 UART.c
 
 UART_Print.c

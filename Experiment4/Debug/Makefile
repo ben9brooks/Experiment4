@@ -43,6 +43,7 @@ C_SRCS +=  \
 ../main.c \
 ../print_memory.c \
 ../twi.c \
+../twi_debug.c \
 ../UART.c \
 ../UART_Print.c
 
@@ -60,6 +61,7 @@ Long_Serial_In.o \
 main.o \
 print_memory.o \
 twi.o \
+twi_debug.o \
 UART.o \
 UART_Print.o
 
@@ -70,6 +72,7 @@ Long_Serial_In.o \
 main.o \
 print_memory.o \
 twi.o \
+twi_debug.o \
 UART.o \
 UART_Print.o
 
@@ -80,6 +83,7 @@ Long_Serial_In.d \
 main.d \
 print_memory.d \
 twi.d \
+twi_debug.d \
 UART.d \
 UART_Print.d
 
@@ -90,6 +94,7 @@ Long_Serial_In.d \
 main.d \
 print_memory.d \
 twi.d \
+twi_debug.d \
 UART.d \
 UART_Print.d
 
@@ -143,6 +148,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./twi.o: .././twi.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./twi_debug.o: .././twi_debug.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

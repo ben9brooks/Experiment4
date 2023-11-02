@@ -10,7 +10,7 @@
 #define TWI_DEBUG_H_
 
 
-
+uint8_t initialize_sta013();
 
 
 #endif /* TWI_DEBUG_H_ */
