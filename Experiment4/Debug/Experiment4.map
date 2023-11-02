@@ -51,20 +51,28 @@ Discarded input sections
  .text          0x00000000        0x0 twi.o
  .data          0x00000000        0x0 twi.o
  .bss           0x00000000        0x0 twi.o
+ .text.stopCond
+                0x00000000        0x8 twi.o
+ .text.fullStopCond
+                0x00000000        0x8 twi.o
+ .text.startCond
+                0x00000000        0x8 twi.o
+ .text.restartCond
+                0x00000000        0x8 twi.o
  .text.TWI_master_init
                 0x00000000       0xaa twi.o
  .text.TWI_master_receive
-                0x00000000        0x2 twi.o
- .debug_info    0x00000000      0x22c twi.o
- .debug_abbrev  0x00000000      0x102 twi.o
- .debug_loc     0x00000000      0x199 twi.o
+                0x00000000       0xb2 twi.o
+ .debug_info    0x00000000      0x3f9 twi.o
+ .debug_abbrev  0x00000000      0x143 twi.o
+ .debug_loc     0x00000000      0x2ef twi.o
  .debug_aranges
-                0x00000000       0x28 twi.o
- .debug_ranges  0x00000000       0x18 twi.o
- .debug_line    0x00000000      0x11d twi.o
- .debug_str     0x00000000      0x227 twi.o
+                0x00000000       0x48 twi.o
+ .debug_ranges  0x00000000       0x38 twi.o
+ .debug_line    0x00000000      0x24b twi.o
+ .debug_str     0x00000000      0x2ef twi.o
  .comment       0x00000000       0x31 twi.o
- .debug_frame   0x00000000       0x54 twi.o
+ .debug_frame   0x00000000       0xb0 twi.o
  .text          0x00000000        0x0 UART.o
  .data          0x00000000        0x0 UART.o
  .bss           0x00000000        0x0 UART.o
