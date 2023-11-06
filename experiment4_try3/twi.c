@@ -20,18 +20,28 @@ void restartCond(volatile TWI_t* TWI_addr)
 	TWI_addr->TWCR = ((1<<TWINT) | (1<<TWEA) | (1<<TWEN));	
 }
     
-uint8_t TWI_master_init(volatile TWI_t *TWI_addr, uint32_t I2C_freq)
+uint8_t TWI_master_init(volatile TWI_t *TWI_addr, volatile uint32_t I2C_freq)
 {
     TWI_ERROR_CODES error = TWI_OK; 
+	//uint32_t temp32 = I2C_freq;
     uint8_t twps_val;
-    uint32_t prescale = (((F_CPU/OSC_DIV)/I2C_freq)-16UL)/(2UL*255);
+	uint32_t prescale;
+	prescale = (F_CPU/OSC_DIV);
+	prescale = prescale/I2C_freq;
+	prescale = prescale - 16UL;
+	prescale = prescale/(2UL*255);
+    //uint32_t prescale = (((F_CPU/OSC_DIV)/I2C_freq)-16UL)/(2UL*255);
     if (prescale < 1) {
+		prescale = 1;
         twps_val = 0x00;
     } else if (prescale < 4) {
+		prescale = 4;
         twps_val = 0x01;
     } else if (prescale < 16) {
+		prescale = 16;
         twps_val = 0x02;
     } else if (prescale < 64) {
+		prescale = 64;
         twps_val = 0x03;
     } else {
         return TWI_ERROR; // fail
@@ -42,7 +52,7 @@ uint8_t TWI_master_init(volatile TWI_t *TWI_addr, uint32_t I2C_freq)
     uint16_t TWBR=(((F_CPU/OSC_DIV)/I2C_freq)-16UL)/(2UL*prescale);
     if (TWBR >= 256)
     {
-        return TWI_ERROR; // fail
+        return TWI_ERROR_TWO; // fail
     }
 
     TWI_addr->TWBR = TWBR;
@@ -52,6 +62,9 @@ uint8_t TWI_master_init(volatile TWI_t *TWI_addr, uint32_t I2C_freq)
 
 uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32_t int_addr, uint8_t int_addr_sz, uint16_t num_bytes, uint8_t* arr)
 {
+	// 200us 5.00MS/s    D10 X
+	// ???   10k points   1.49V
+	// Type=Edge, Source=D10
 	//general layout for a receive: START condition, Device Address, receive an ACK, then receive data byte(s) with an ACK after each one, except the last is a NACK, plus a STOP condition.
 	uint8_t status;
 	uint8_t temp8;
@@ -74,7 +87,7 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 	} while ((status&0x80)==0);
 	
 	//read status
-	temp8 = ((TWI_addr->TWCR)&0xF8); //clear lower 3 bits
+	temp8 = ((TWI_addr->TWSR)&0xF8); //clear lower 3 bits
 	
 	//if start sent, then send SLA+R (temp8/status can be start or repeated start condition)
 	if((temp8 == TWSR_START_Cond) || (temp8 == TWSR_START_Cond_repeat))
@@ -82,14 +95,20 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 		TWI_addr->TWDR = send_value;
 		TWI_addr->TWCR = ((1<<TWINT) | (1<<TWEN));
 	}
-	//!! can check for other errors here...
-	if(1 == 2)
+	//can check for errors here?
+	else
 	{
-		return TWI_ERROR; //fixme
+		return TWI_ERROR_BUS_BUSY;
 	}
 	
+	// Wait for TWINT to be set indicating transmission of SLA+R and reception of ACK/NACK
+	do 
+	{
+		status = TWI_addr->TWCR;
+	} while ((status & 0x80) == 0);
+
 	//read status
-	temp8 = TWI_addr->TWCR;
+	temp8 = ((TWI_addr->TWSR)&0xF8); //clear lower 3 bits
 	
 	//receive ACK From slave (write 1 to TWEA, bit 6 of TWCR, when ACK should be sent after receiving data from slave)
 	if(temp8 == TWSR_ACK_rcvd) //SLA+R sent, ACK received
@@ -157,8 +176,8 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 	{
 		if (temp8 == TWSR_NACK_rcvd)
 		{
-			return TWI_ERROR; //fixme, maybe a bus_busy error?
+			return TWI_ERROR_NACK;
 		}
 	}
-	
+	return 0;
 }

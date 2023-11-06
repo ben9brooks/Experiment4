@@ -7,7 +7,7 @@
 #define TWSTO_on (1<<4)
 #define TWEA_ACK (1<<6)
 #define TWEA_NACK (0<<6)
-#define TWINT (1<<7)
+//#define TWINT (1<<7)
 
 typedef struct TWI
 {
@@ -33,7 +33,11 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 typedef enum 
 {
     TWI_OK = 0,
-    TWI_ERROR = 1 
+    TWI_ERROR = 1 ,
+	TWI_ERROR_TWO = 2,
+	TWI_ERROR_TIMEOUT = 3,
+	TWI_ERROR_BUS_BUSY = 4,
+	TWI_ERROR_NACK = 5
 
 }TWI_ERROR_CODES;
 
@@ -44,8 +48,8 @@ typedef enum
 	TWSR_ARB = 0x38,
 	TWSR_ACK_rcvd = 0x40,
 	TWSR_NACK_rcvd = 0x48,
-	TWSR_ACK_rtrnd = 0x50,
-	TWSR_NACK_rtrnd = 0x58
+	TWSR_ACK_rtrnd = 0x50,  //data byte received, ack returned
+	TWSR_NACK_rtrnd = 0x58  //data byte received, nack returned
 	
 }TWSR_ERROR_CODES;
 

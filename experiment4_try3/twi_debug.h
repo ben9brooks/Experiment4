@@ -12,5 +12,7 @@
 
 uint8_t initialize_sta013();
 
+void printError(uint8_t err);
+
 
 #endif /* TWI_DEBUG_H_ */
