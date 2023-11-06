@@ -28,7 +28,7 @@ void startCond(volatile TWI_t* TWI_addr);
 void restartCond(volatile TWI_t* TWI_addr);
 uint8_t TWI_master_init(volatile TWI_t *TWI_addr, uint32_t I2C_freq);
 uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32_t int_addr, uint8_t int_addr_sz, uint16_t num_bytes, uint8_t* arr);
-
+uint8_t TWI_master_transmit(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32_t int_addr, uint8_t int_addr_sz, uint16_t num_bytes, uint8_t* arr);
 
 typedef enum 
 {
@@ -46,10 +46,14 @@ typedef enum
 	TWSR_START_Cond = 0x08,
 	TWSR_START_Cond_repeat = 0x10,
 	TWSR_ARB = 0x38,
-	TWSR_ACK_rcvd = 0x40,
-	TWSR_NACK_rcvd = 0x48,
-	TWSR_ACK_rtrnd = 0x50,  //data byte received, ack returned
-	TWSR_NACK_rtrnd = 0x58  //data byte received, nack returned
+	TWSR_W_ACK_rcvd_int = 0x18,
+	TWSR_W_NACK_rcvd_int = 0x20,
+	TWSR_W_ACK_rcvd_data = 0x28,
+	TWSR_W_NACK_rcvd_data = 0x30,
+	TWSR_R_ACK_rcvd = 0x40,
+	TWSR_R_NACK_rcvd = 0x48,
+	TWSR_R_ACK_rtrnd = 0x50,  //data byte received, ack returned
+	TWSR_R_NACK_rtrnd = 0x58  //data byte received, nack returned
 	
 }TWSR_ERROR_CODES;
 

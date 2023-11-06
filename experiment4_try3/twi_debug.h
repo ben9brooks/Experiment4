@@ -11,6 +11,7 @@
 
 
 uint8_t initialize_sta013();
+uint8_t step5();
 
 void printError(uint8_t err);
 
