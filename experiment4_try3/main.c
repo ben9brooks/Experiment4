@@ -65,7 +65,7 @@ int main(void)
 	*
 	******************/
 	
-	error = initialize_sta013();
+	//error = initialize_sta013();
 	if (error != 0)
 	{
 		UART_transmit_string(UART1, "sta_timeout\n", 12);

@@ -1,6 +1,6 @@
 #include "twi.h"
 
-void stopCond(volatile TWI_t* TWI_addr)
+void nackCond(volatile TWI_t* TWI_addr)
 {
 	TWI_addr->TWCR = ((1<<TWINT) | (0<<TWEA) | (1<<TWEN));
 }
@@ -15,10 +15,6 @@ void fullStopCond(volatile TWI_t* TWI_addr)
 		status = TWI_addr->TWCR;
 		//timeout--;
 	} while (((status& 0x10) != 0) && (timeout != 0));
-	if(timeout == 0)
-	{
-		TWI_addr->TWCR &= 0xEF;  //0b0001000    &0b11101111
-	}
 }
 
 void startCond(volatile TWI_t* TWI_addr)
@@ -26,7 +22,7 @@ void startCond(volatile TWI_t* TWI_addr)
 	TWI_addr->TWCR = ((1<<TWINT) | (1<<TWSTA) | (1<<TWEN));	
 }
 
-void restartCond(volatile TWI_t* TWI_addr)
+void ackCond(volatile TWI_t* TWI_addr)
 {
 	TWI_addr->TWCR = ((1<<TWINT) | (1<<TWEA) | (1<<TWEN));	
 }
@@ -113,6 +109,13 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 		return TWI_ERROR_BUS_BUSY;
 	}
 	
+	
+	/************
+	*
+	* Read First Byte
+	*
+	************/
+	
 	// Wait for TWINT to be set indicating transmission of SLA+R and reception of ACK/NACK
 	do 
 	{
@@ -129,12 +132,12 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 		// if 1 byte received, send NACK to slave ( write 0 to TWEA)
 		if(num_bytes == 1)
 		{
-			stopCond(TWI_addr);
+			nackCond(TWI_addr);
 		}
 		// if >1 byte received, send ACK after all but the last byte.
 		else
 		{
-			restartCond(TWI_addr);
+			ackCond(TWI_addr);
 		}
 
 		//send all data bytes until all bytes sent or error
@@ -158,11 +161,11 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 				index++;
 				if(num_bytes == 1)
 				{
-					stopCond(TWI_addr);
+					nackCond(TWI_addr);  //TWEA=0
 				}
 				else
 				{
-					restartCond(TWI_addr);
+					ackCond(TWI_addr); //TWEA=1
 				}
 			}
 			else if (temp8 == TWSR_R_NACK_rtrnd)
@@ -174,21 +177,22 @@ uint8_t TWI_master_receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32
 				//write 1 to TWSTO (bit 4) to request stop condition
 				fullStopCond(TWI_addr);
 				
-				//wait for twsto to return to 0
-				do 
-				{
-					status = TWI_addr->TWCR;
-				} while ((status&0x10) != 0);
-				
 			}
 			
 		}
+		fullStopCond(TWI_addr);
 	}
 	else //NACK at the start is not expected, we didn't get to receive anything.
 	{
+		
 		if (temp8 == TWSR_R_NACK_rcvd)
 		{
+			fullStopCond(TWI_addr);
 			return TWI_ERROR_NACK;
+		}
+		if (temp8 == TWSR_ARB)
+		{
+			TWI_addr->TWCR = ((1<<TWINT) | (1<<TWEN));
 		}
 	}
 	return 0;
@@ -286,12 +290,12 @@ uint8_t TWI_master_transmit(volatile TWI_t *TWI_addr, uint8_t device_addr, uint3
 		// if 1 byte received, send NACK to slave ( write 0 to TWEA)
 		if(num_bytes == 1)
 		{
-			stopCond(TWI_addr);
+			nackCond(TWI_addr);
 		}
 		// if >1 byte received, send ACK after all but the last byte.
 		else
 		{
-			restartCond(TWI_addr);
+			ackCond(TWI_addr);
 		}
 
 		//send all data bytes until all bytes sent or error
@@ -315,11 +319,11 @@ uint8_t TWI_master_transmit(volatile TWI_t *TWI_addr, uint8_t device_addr, uint3
 				index--;
 				if(num_bytes == 1)
 				{
-					stopCond(TWI_addr);
+					nackCond(TWI_addr);
 				}
 				else
 				{
-					restartCond(TWI_addr);
+					ackCond(TWI_addr);
 				}
 			}
 			else if (temp8 == TWSR_W_NACK_rcvd_data)
