@@ -20,6 +20,7 @@
 ******                                                                        UART_trnasmit_string(UART1,buffer,0);
 ******/
 char * export_print_buffer(void);
+void clear_print_buffer(void);
 
 /**************************************************************
 *   copy_string_to_buffer

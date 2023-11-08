@@ -19,6 +19,7 @@
 
 #include "twi.h"
 #include "twi_debug.h"
+#include "Config_Arrays.h"
 
 
 const char test_string[15] PROGMEM = "Hello World!\n\r";
@@ -26,8 +27,7 @@ const char test_string[15] PROGMEM = "Hello World!\n\r";
 int main(void)
 {
 	uint8_t error = 0;
-	uint32_t i2c_freq = 100000; /* 100k */ 
-	uint8_t bkpt = 0;
+	uint32_t i2c_freq = 50000; /* 100k */ 
 	uint8_t array[3] = {0,0,0};
 	uint8_t timer = 10;
 	
@@ -52,12 +52,12 @@ int main(void)
 	*
 	******************/
 
-	// do 
-	// {
-	// 	error = TWI_master_receive(TWI1_Base, 0x43, 0, 0, 3, array);
-	// 	timer--;
-	// } while ((error > 0) && (timer>0));
-	//printError(error);
+	do 
+	{
+	 	error = TWI_master_receive(TWI1_Base, 0x43, 0, 0, 3, array);
+	 	timer--;
+	} while ((error > 0) && (timer>0));
+	printError(error);
 	
 	/******************
 	*
@@ -65,7 +65,7 @@ int main(void)
 	*
 	******************/
 	
-	//error = initialize_sta013();
+	error = initialize_sta013();
 	if (error != 0)
 	{
 		UART_transmit_string(UART1, "sta_timeout\n", 12);
@@ -73,19 +73,31 @@ int main(void)
 	
 	_delay_ms(1000);
 	
+	UART_transmit_string(UART1, "\n3 Finished\n", 12);
+	
 	/************
 	*
 	* Step 4/5
 	*
 	************/
 	
-	step5();
+	sta_debug_test();
 	
+	/************
+	*
+	* Step 6
+	*
+	************/
 
+	write_sta013_config(TWI1_Base);
 
-
-
-
+	/************
+	*
+	* Step 7
+	*
+	************/
+	
+	read_sta013_config(TWI1_Base);
 
 	
 	UART_transmit_string(UART1, "\nEND\n", 5);

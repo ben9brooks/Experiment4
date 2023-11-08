@@ -66,4 +66,11 @@ typedef struct UART
 #define UART1 ((volatile UART_t *) 0xC8)
 #define UART2 ((volatile UART_t *) 0xD0)
 
+typedef struct port_regs
+{
+	volatile uint8_t PIN_REG;
+	volatile uint8_t DDR_REG;
+	volatile uint8_t PORT_REG;
+} GPIO_port_t;
+
 #endif /* BOARD_H_ */

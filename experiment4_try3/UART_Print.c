@@ -25,6 +25,14 @@ char * export_print_buffer(void)
 	return print_buffer;
 }
 
+void clear_print_buffer(void)
+{
+	for(uint8_t i = 0; i < 80; i++)
+	{
+		print_buffer[i] = 0;
+	}
+}
+
 /**************************************************************
 *   copy_string_to_buffer
 *   Inputs: pointer to a string stored in Flash memory (must be in Flash)

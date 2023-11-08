@@ -8,11 +8,17 @@
 #include "twi_debug.h"
 #include "GPIO_Outputs.h"
 #include <util/delay.h>
+#include "gpio_input.h"
+#include <stdio.h>
+#include "UART_Print.h" 
 
 uint8_t initialize_sta013()
 {
-	//hold PB1 low for at least 100ns:
+	
 	GPIO_output_init(PB, (1<<1));
+	GPIO_Input_Init(PC, (1<<6), (1<<6));
+	GPIO_output_init(PD, (1<<6)); 
+	//hold PB1 low for at least 100ns:
 	GPIO_output_clear(PB, (1<<1));
 	_delay_us((double) .1);//this is 100ns, might mess up tho
 	GPIO_output_set(PB, (1<<1));
@@ -20,7 +26,8 @@ uint8_t initialize_sta013()
 	char * prnt_bffr;
 	
 	prnt_bffr=export_print_buffer();
-	memset(prnt_bffr, 0, sizeof(prnt_bffr[0]) * 80);
+	clear_print_buffer();
+	//memset(prnt_bffr, 0, sizeof(prnt_bffr[0]) * 80);
 	
 	uint8_t array[3] = {0,0,0};
 	uint8_t error;
@@ -45,7 +52,7 @@ uint8_t initialize_sta013()
 	
 }
 
-uint8_t step5()
+uint8_t sta_debug_test()
 {
 	//hold PB1 low for at least 100ns:
 	GPIO_output_init(PB, (1<<1));
@@ -56,7 +63,8 @@ uint8_t step5()
 	char * prnt_bffr;
 	
 	prnt_bffr=export_print_buffer();
-	memset(prnt_bffr, 0, sizeof(prnt_bffr[0]) * 80);
+	clear_print_buffer();
+	//memset(prnt_bffr, 0, sizeof(prnt_bffr[0]) * 80);
 	
 	uint8_t array[3] = {0,0,0};
 	uint8_t error;

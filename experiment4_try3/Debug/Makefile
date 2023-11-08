@@ -37,6 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../Config_Arrays.c \
+../gpio_input.c \
 ../GPIO_Outputs.c \
 ../LEDS.c \
 ../Long_Serial_In.c \
@@ -55,6 +57,8 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+Config_Arrays.o \
+gpio_input.o \
 GPIO_Outputs.o \
 LEDS.o \
 Long_Serial_In.o \
@@ -66,6 +70,8 @@ UART.o \
 UART_Print.o
 
 OBJS_AS_ARGS +=  \
+Config_Arrays.o \
+gpio_input.o \
 GPIO_Outputs.o \
 LEDS.o \
 Long_Serial_In.o \
@@ -77,6 +83,8 @@ UART.o \
 UART_Print.o
 
 C_DEPS +=  \
+Config_Arrays.d \
+gpio_input.d \
 GPIO_Outputs.d \
 LEDS.d \
 Long_Serial_In.d \
@@ -88,6 +96,8 @@ UART.d \
 UART_Print.d
 
 C_DEPS_AS_ARGS +=  \
+Config_Arrays.d \
+gpio_input.d \
 GPIO_Outputs.d \
 LEDS.d \
 Long_Serial_In.d \
@@ -112,6 +122,20 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+./Config_Arrays.o: .././Config_Arrays.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./gpio_input.o: .././gpio_input.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./GPIO_Outputs.o: .././GPIO_Outputs.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0

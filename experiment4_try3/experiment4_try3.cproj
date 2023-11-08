@@ -47,7 +47,7 @@
     <com_atmel_avrdbg_tool_edbg>
       <ToolOptions>
         <InterfaceProperties>
-          <JtagDbgClock>320000</JtagDbgClock>
+          <JtagDbgClock>220000</JtagDbgClock>
           <JtagEnableExtResetOnStartSession>true</JtagEnableExtResetOnStartSession>
           <JtagInChain>false</JtagInChain>
           <JtagDevicesBefore>0</JtagDevicesBefore>
@@ -64,7 +64,7 @@
       <ToolNumber>ATML2589040200001351</ToolNumber>
       <ToolName>EDBG</ToolName>
     </com_atmel_avrdbg_tool_edbg>
-    <avrtoolinterfaceclock>320000</avrtoolinterfaceclock>
+    <avrtoolinterfaceclock>220000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -149,6 +149,18 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="board_struct.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Config_Arrays.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Config_Arrays.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gpio_input.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gpio_input.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="GPIO_Outputs.c">
